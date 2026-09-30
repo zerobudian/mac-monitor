@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1 - 2026-10-01
+
+- Fixed dragging the compact and expanded desktop windows from their top bars.
+
 ## 1.0.0 - 2026-10-01
 
 - Added a password-free localhost monitoring service and browser dashboard.
