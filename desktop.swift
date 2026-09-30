@@ -5,10 +5,30 @@ import WebKit
 private let compactSize = NSSize(width: 180, height: 180)
 private let expandedSize = NSSize(width: 520, height: 390)
 
+final class WindowDragView: NSView {
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool {
+        true
+    }
+
+    override func resetCursorRects() {
+        addCursorRect(bounds, cursor: .openHand)
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        if let window {
+            NSCursor.closedHand.push()
+            window.performDrag(with: event)
+            NSCursor.pop()
+        }
+    }
+}
+
 final class DesktopMonitorApp: NSObject, NSApplicationDelegate, WKScriptMessageHandler, WKNavigationDelegate {
     private var window: NSWindow!
     private var webView: WKWebView!
     private var effectView: NSVisualEffectView!
+    private var dragView: WindowDragView!
+    private var dragHeightConstraint: NSLayoutConstraint!
     private var toggleButton: NSButton!
     private var pageURL: URL!
 
@@ -44,6 +64,7 @@ final class DesktopMonitorApp: NSObject, NSApplicationDelegate, WKScriptMessageH
             webView.topAnchor.constraint(equalTo: effectView.topAnchor),
             webView.bottomAnchor.constraint(equalTo: effectView.bottomAnchor),
         ])
+        installDragRegion()
         installGlassControls()
 
         let visible = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1440, height: 900)
@@ -84,9 +105,11 @@ final class DesktopMonitorApp: NSObject, NSApplicationDelegate, WKScriptMessageH
         guard message.name == "windowControl", let command = message.body as? String else { return }
         switch command {
         case "expand":
+            dragHeightConstraint.constant = 40
             resizeWindow(to: expandedSize, radius: 28)
             setToggleSymbol("arrow.down.right.and.arrow.up.left", help: "收起")
         case "compact":
+            dragHeightConstraint.constant = 30
             resizeWindow(to: compactSize, radius: 26)
             setToggleSymbol("arrow.up.left.and.arrow.down.right", help: "展开")
         case "close":
@@ -124,10 +147,23 @@ final class DesktopMonitorApp: NSObject, NSApplicationDelegate, WKScriptMessageH
         glass.wantsLayer = true
         glass.layer?.cornerCurve = .continuous
         glass.translatesAutoresizingMaskIntoConstraints = false
-        effectView.addSubview(glass, positioned: .above, relativeTo: webView)
+        effectView.addSubview(glass, positioned: .above, relativeTo: dragView)
         NSLayoutConstraint.activate([
             glass.topAnchor.constraint(equalTo: effectView.topAnchor, constant: 8),
             glass.trailingAnchor.constraint(equalTo: effectView.trailingAnchor, constant: -10),
+        ])
+    }
+
+    private func installDragRegion() {
+        dragView = WindowDragView()
+        dragView.translatesAutoresizingMaskIntoConstraints = false
+        effectView.addSubview(dragView, positioned: .above, relativeTo: webView)
+        dragHeightConstraint = dragView.heightAnchor.constraint(equalToConstant: 30)
+        NSLayoutConstraint.activate([
+            dragView.leadingAnchor.constraint(equalTo: effectView.leadingAnchor),
+            dragView.trailingAnchor.constraint(equalTo: effectView.trailingAnchor),
+            dragView.topAnchor.constraint(equalTo: effectView.topAnchor),
+            dragHeightConstraint,
         ])
     }
 
