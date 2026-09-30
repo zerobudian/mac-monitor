@@ -1,4 +1,3 @@
-# Mac Monitor
 
 轻量、开源的 macOS 本机硬件监控面板，同时提供浏览器页面与桌面常驻浮窗。实时展示 CPU、GPU、系统负载、风扇和内存状态，不需要账号、密码或管理员权限。
 
@@ -71,7 +70,7 @@ python3 server.py --browser
 ```bash
 python3 -m venv .build-venv
 .build-venv/bin/python -m pip install --upgrade pip pyinstaller
-./scripts/build_macos.sh 1.0.0
+bash scripts/build_macos.sh 1.0.0
 ```
 
 产物位于 `release/`。构建脚本会编译 Swift 原生外壳、将服务和网页资源封装进 `.app`、执行临时签名，并生成 SHA-256 校验文件。
