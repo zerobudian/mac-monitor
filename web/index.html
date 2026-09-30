@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Mac Monitor · 本机实时监控</title>
+<link rel="stylesheet" href="/static/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◉</text></svg>">
+</head>
+<body>
+<div class="ambient ambient-one"></div>
+<div class="ambient ambient-two"></div>
+
+<section class="compact-shell" aria-label="桌面监控浮窗">
+  <div class="glass-shine"></div>
+  <header class="compact-head">
+    <div class="compact-title">
+      <div class="brand-mark compact-mark" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div><strong>Mac Monitor</strong><span><i id="miniStatusDot"></i> 本机实时监控</span></div>
+    </div>
+    <div class="window-actions">
+      <button id="expandBtn" class="window-button" title="展开完整面板" aria-label="展开完整面板">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5m13 5h5v-5"/></svg>
+      </button>
+      <button id="closeBtn" class="window-button close-button" title="退出监控" aria-label="退出监控">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="compact-metrics">
+    <article class="ring-stat metric-cpu">
+      <div class="metric-ring" id="miniCpuRing"><div class="ring-core"><span>CPU</span><div><strong id="miniCpuVal">–</strong><small>%</small></div></div></div>
+    </article>
+    <article class="ring-stat metric-gpu">
+      <div class="metric-ring" id="miniGpuRing"><div class="ring-core"><span>GPU</span><div><strong id="miniGpuVal">–</strong><small>%</small></div></div></div>
+    </article>
+    <article class="ring-stat metric-load">
+      <div class="metric-ring" id="miniLoadRing"><div class="ring-core"><span>负载</span><div><strong id="miniLoadVal">–</strong></div></div></div>
+    </article>
+    <article class="ring-stat metric-fan">
+      <div class="metric-ring" id="miniFanRing"><div class="ring-core"><span>风扇</span><div><strong id="miniFanVal">–</strong><small>RPM</small></div></div></div>
+    </article>
+    <article class="ring-stat metric-mem">
+      <div class="metric-ring" id="miniMemRing"><div class="ring-core"><span>内存</span><div><strong id="miniMemVal">–</strong><small>%</small></div></div></div>
+    </article>
+  </div>
+</section>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="brand-copy">
+        <span class="eyebrow">LOCAL TELEMETRY</span>
+        <strong>Mac Monitor</strong>
+      </div>
+    </div>
+
+    <div class="actions">
+      <span class="status" id="status"><i></i><em>连接中</em></span>
+      <a class="control" href="/api/export" download title="导出最近 30 分钟的监控日志">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3"/></svg>
+        <span>导出日志</span>
+      </a>
+      <button class="control icon-control" id="themeBtn" title="切换显示主题" aria-label="切换显示主题">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c0-.5 0-.9-.1-1.4A7 7 0 0 1 13.4 3H12Z"/></svg>
+        <span id="themeLabel">自动</span>
+      </button>
+      <button class="control desktop-only" id="compactBtn" title="收起为桌面浮窗" aria-label="收起为桌面浮窗">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4m11-5v5h5M9 20v-5H4m11 5v-5h5"/></svg>
+        <span>收起</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="dashboard">
+  <section class="hero">
+    <div>
+      <p class="section-kicker">OVERVIEW</p>
+      <h1>系统运行态势</h1>
+      <p class="machine" id="subTitle">正在读取设备信息…</p>
+    </div>
+    <div class="hero-meta">
+      <span>本地时间</span>
+      <strong id="clock">--:--:--</strong>
+    </div>
+  </section>
+
+  <section class="expanded-rings desktop-only" aria-label="展开态实时指标">
+    <article class="ring-stat"><div class="metric-ring" id="deskCpuRing"><div class="ring-core"><span>CPU</span><div><strong id="deskCpuVal">–</strong><small>%</small></div></div></div></article>
+    <article class="ring-stat"><div class="metric-ring" id="deskGpuRing"><div class="ring-core"><span>GPU</span><div><strong id="deskGpuVal">–</strong><small>%</small></div></div></div></article>
+    <article class="ring-stat"><div class="metric-ring" id="deskLoadRing"><div class="ring-core"><span>负载</span><div><strong id="deskLoadVal">–</strong></div></div></div></article>
+    <article class="ring-stat metric-fan"><div class="metric-ring" id="deskFanRing"><div class="ring-core"><span>风扇</span><div><strong id="deskFanVal">–</strong><small>RPM</small></div></div></div></article>
+    <article class="ring-stat"><div class="metric-ring" id="deskMemRing"><div class="ring-core"><span>内存</span><div><strong id="deskMemVal">–</strong><small>%</small></div></div></div></article>
+  </section>
+
+  <section class="metrics" aria-label="实时指标">
+    <article class="metric metric-cpu">
+      <div class="metric-head"><span class="metric-icon">CPU</span><span>处理器</span></div>
+      <div class="metric-number"><strong id="cpuVal">–</strong><small>%</small></div>
+      <p id="cpuSub">等待首次采样</p>
+      <div class="meter"><i id="cpuBar"></i></div>
+    </article>
+
+    <article class="metric metric-gpu">
+      <div class="metric-head"><span class="metric-icon">GPU</span><span>图形处理器</span></div>
+      <div class="metric-number"><strong id="gpuVal">–</strong><small>%</small></div>
+      <p id="gpuSub">等待首次采样</p>
+      <div class="meter"><i id="gpuBar"></i></div>
+    </article>
+
+    <article class="metric metric-load">
+      <div class="metric-head"><span class="metric-icon">AVG</span><span>系统负载</span></div>
+      <div class="metric-number"><strong id="loadVal">–</strong></div>
+      <p id="loadSub">等待首次采样</p>
+      <div class="meter"><i id="loadBar"></i></div>
+    </article>
+
+    <article class="metric metric-fan">
+      <div class="metric-head"><span class="metric-icon">FAN</span><span>散热系统</span></div>
+      <div class="metric-number"><strong id="fanVal">–</strong><small>RPM</small></div>
+      <p id="fanSub">等待首次采样</p>
+      <div class="meter"><i id="fanBar"></i></div>
+    </article>
+
+    <article class="metric metric-mem">
+      <div class="metric-head"><span class="metric-icon">RAM</span><span>内存</span></div>
+      <div class="metric-number"><strong id="memVal">–</strong><small>%</small></div>
+      <p id="memSub">等待首次采样</p>
+      <div class="meter"><i id="memBar"></i></div>
+    </article>
+  </section>
+
+  <nav class="chart-branches desktop-only" aria-label="曲线类型">
+    <button class="active" data-chart="0">CPU / GPU</button>
+    <button data-chart="1">系统负载</button>
+    <button data-chart="2">风扇转速</button>
+  </nav>
+
+  <section class="charts">
+    <article class="panel panel-wide active-chart">
+      <div class="panel-head">
+        <div><span class="panel-kicker">PERFORMANCE</span><h2>处理器活动</h2></div>
+        <div class="legend" id="lg1"></div>
+      </div>
+      <div class="chart-wrap chart-primary"><canvas id="chart1"></canvas><div class="tip" id="tip1"></div></div>
+    </article>
+
+    <article class="panel">
+      <div class="panel-head">
+        <div><span class="panel-kicker">SYSTEM LOAD</span><h2>平均负载</h2></div>
+        <div class="legend" id="lg2"></div>
+      </div>
+      <div class="chart-wrap"><canvas id="chart2"></canvas><div class="tip" id="tip2"></div></div>
+    </article>
+
+    <article class="panel">
+      <div class="panel-head">
+        <div><span class="panel-kicker">THERMAL</span><h2>风扇转速</h2></div>
+        <div class="legend" id="lg3"></div>
+      </div>
+      <div class="chart-wrap"><canvas id="chart3"></canvas><div class="tip" id="tip3"></div></div>
+    </article>
+  </section>
+
+  <footer>
+    <span><i class="privacy-dot"></i>数据仅在本机处理 · 127.0.0.1</span>
+    <span>每 1 秒刷新 · 已缓存 <b id="historyCount">0</b> 条采样</span>
+  </footer>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
