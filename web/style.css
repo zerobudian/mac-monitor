@@ -495,6 +495,8 @@ body.desktop-host:not(.compact-mode) .topbar-inner {
   padding: 0 9px;
 }
 body.desktop-host:not(.compact-mode) .topbar { background: transparent; }
+body.native-controls:not(.compact-mode) .topbar { cursor: grab; }
+body.native-controls:not(.compact-mode) .topbar:active { cursor: grabbing; }
 body.desktop-host:not(.compact-mode) .brand-mark { width: 27px; height: 27px; padding: 6px; border-radius: 8px; }
 body.desktop-host:not(.compact-mode) .brand-copy .eyebrow { display: none; }
 body.desktop-host:not(.compact-mode) .actions { gap: 6px; }
