@@ -1,0 +1,10 @@
+.runtime/
+__pycache__/
+*.pyc
+.build-venv/
+build/
+dist/
+release/
+*.spec
+.DS_Store
+交接文档.md
